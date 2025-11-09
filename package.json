@@ -1,0 +1,27 @@
+{
+  "name": "colin-malin-server",
+  "version": "1.0.0",
+  "description": "app Quiz",
+  "license": "ISC",
+  "author": "CodeRonin",
+  "type": "module",
+  "main": "src/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon --env-file=.env src/app.js",
+    "start": "node --env-file-if-exists=.env src/app.js",
+    "init-db": "node --env-file=.env src/config/init-db.js"
+  },
+  "dependencies": {
+    "argon2": "^0.44.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.1",
+    "nodemon": "^3.1.10",
+    "pg": "^8.16.3",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.7",
+    "uuid": "^13.0.0"
+  }
+}
