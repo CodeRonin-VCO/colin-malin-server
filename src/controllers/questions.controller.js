@@ -28,6 +28,38 @@ const questionsController = {
             res.status(500).json({ message: "Une erreur est survenue lors de la récupération des questions." });
         }
     },
+    getBySearch: async (req, res) => {
+        const { offset = 0, limit = 20 } = req.pagination;
+        const { query } = req.query;
+
+        if (!query) {
+            return res.status(400).json({ message: "Le paramètre de recherche est requis." });
+        }
+
+        try {
+            const questions = await db.Question.findAll({
+                where: {
+                    question: {
+                        [Op.iLike] : `%${query}%` // recherche insensible à la casse
+                    }
+                },
+                order: [["created_at", "DESC"]],
+                limit,
+                offset
+            });
+
+            return res.status(200).json({
+                questions,
+                offset,
+                limit,
+                message: "Résultats de la recherche récupérés avec succès."
+            });
+
+        } catch (error) {
+            console.error("Error searching questions:", error);
+            res.status(500).json({ message: "Une erreur est survenue lors de la recherche." });
+        }
+    },
     filtered: async (req, res) => {
         console.log("Requête reçue sur /filtered"); // ← ici
         console.log("Corps de la requête :", req.body); // ← ici

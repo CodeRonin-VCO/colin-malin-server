@@ -7,7 +7,7 @@ export const paginationMiddleware = (req, res, next) => {
     // Injection des informations dans l'objet request
     req.pagination = {
         offset: !isNaN(offsetUrl) ? offsetUrl : 0,
-        limit: !isNaN(limitUrl) ? limitUrl : 10
+        limit: !isNaN(limitUrl) ? limitUrl : 20
     };
 
     // Middleware suivant !

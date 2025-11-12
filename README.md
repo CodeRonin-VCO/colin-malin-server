@@ -28,6 +28,3 @@
         GET     /user/:id       # Scores d’un utilisateur spécifique
         GET     /leaderboard    # (optionnel) Top scores globaux
 ```
-
-## Schéma des modèles
-![alt text](image.png)
