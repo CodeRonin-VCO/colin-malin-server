@@ -40,11 +40,11 @@ const userController = {
         const updates = req.body;
 
         // ==== Champs à mettre à jour ====
-        const updatedData = {
-            username: updates.username,
-            email: updates.email,
-            description: updates.description
-        };
+        const updatedData = {};
+        if (updates.username) updatedData.username = updates.username;
+        if (updates.email) updatedData.email = updates.email;
+        if (updates.description) updatedData.description = updates.description;
+
 
         try {
             // ==== Vérifier si l'utilisateur existe ====

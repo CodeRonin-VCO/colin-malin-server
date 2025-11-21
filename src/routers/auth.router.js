@@ -6,6 +6,6 @@ const authRouter = Router();
 
 authRouter.route("/login").post(authController.login);
 authRouter.route("/register").post(authController.register);
-authRouter.route("/update-pwd").post(authController.updatePwd);
+authRouter.route("/update-pwd").put(authController.updatePwd);
 
 export default authRouter;

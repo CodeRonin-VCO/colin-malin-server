@@ -61,9 +61,7 @@ const questionsController = {
         }
     },
     filtered: async (req, res) => {
-        console.log("Requête reçue sur /filtered"); // ← ici
-        console.log("Corps de la requête :", req.body); // ← ici
-        const { nb_questions, theme, difficulty } = req.body;
+        let { nb_questions, theme, difficulty } = req.body;
 
         if (!Array.isArray(theme) || !difficulty || !nb_questions) {
             return res.status(400).json({ message: "Paramètres requis manquants." });

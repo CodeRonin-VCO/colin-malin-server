@@ -45,6 +45,7 @@ const authController = {
                     user_id: userFound.user_id,
                     email: userFound.email,
                     username: userFound.username,
+                    role: userFound.role,
                     createdAt: userFound.createdAt,
                     updatedAt: userFound.updatedAt
                 }
@@ -112,6 +113,7 @@ const authController = {
                 user: {
                     username: newUser.username,
                     email: newUser.email,
+                    role: newUser.role,
                     token
                 }
             });
@@ -125,9 +127,10 @@ const authController = {
     updatePwd: async (req, res) => {
         // ==== Récupérer les données entrées ====
         const { email, oldPassword, newPassword } = req.body;
+        console.log(req.body)
 
         // ==== Vérifier si champs sont remplis ====
-        if (!email || !newPassword) {
+        if (!email || !oldPassword || !newPassword) {
             res.status(400).json({ message: "Email, old password and new password are required." });
             return;
         };
@@ -137,7 +140,7 @@ const authController = {
             const userFound = await db.User.findOne({ where: { email } });
             // Si non → erreur 400
             if (!userFound) {
-                res.status(400).json({ error: "User not found !" })
+                return res.status(400).json({ error: "User not found !" })
             };
 
             // ==== Vérifier si le mdp est valide ====
@@ -150,7 +153,7 @@ const authController = {
             const hashNewPwd = await hash(newPassword);
 
             // ==== Stocker le nouveau mdp ====
-            user.password = hashNewPwd;
+            userFound.password = hashNewPwd;
 
             // ==== Le sauver en db ====
             await userFound.save();
@@ -162,7 +165,6 @@ const authController = {
             res.status(500).json({ message: "An error occurred while updating the password." });
             return;
         }
-
     }
 }
 

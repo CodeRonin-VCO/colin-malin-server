@@ -21,7 +21,7 @@ export default function gameModel(sequelize) {
                 type: DataTypes.INTEGER,
                 allowNull: false
             },
-            categories: {
+            theme: {
                 type: DataTypes.ARRAY(DataTypes.STRING), // ou STRING si tu préfères stocker en CSV
                 allowNull: false
             },
@@ -29,7 +29,7 @@ export default function gameModel(sequelize) {
                 type: DataTypes.STRING(50),
                 allowNull: false,
                 validate: {
-                    isIn: [['low', 'medium', 'high']]
+                    isIn: [['low', 'medium', 'high', 'all']]
                 }
             },
             mode: {
@@ -38,11 +38,6 @@ export default function gameModel(sequelize) {
                 validate: {
                     isIn: [['solo', 'multi']], // Équivalent au CHECK de SQL
                 }
-            },
-            score: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-                defaultValue: 0
             },
             played_at: {
                 type: DataTypes.DATE,

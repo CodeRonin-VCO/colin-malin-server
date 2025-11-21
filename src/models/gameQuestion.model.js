@@ -24,7 +24,8 @@ export default function gameQuestionModel(sequelize) {
             },
             user_answer: {
                 type: DataTypes.TEXT,
-                allowNull: false,
+                allowNull: true,
+                defaultValue: null
             },
             is_correct: {
                 type: DataTypes.BOOLEAN,
@@ -37,7 +38,7 @@ export default function gameQuestionModel(sequelize) {
             },
         },
         {
-            tableName: "GameQuestion",
+            tableName: "game_question",
             timestamps: false,
             underscored: true
         }
