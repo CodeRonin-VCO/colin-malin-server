@@ -3,15 +3,31 @@ import morgan from "morgan";
 import apiRouter from "./routers/index.js";
 import cors from "cors";
 import errorHandler from "./middlewares/errorHandler.middleware.js";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+import { body, param, query } from "express-validator";
 
 // ==== Setup ====
 const { PORT, NODE_ENV } = process.env;
 const app = express();
 
-// ==== Global middlewares ====
+// ==== Middlewares transport  ====
 app.use(morgan("dev"));
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "100kb" }));
+
+
+// ==== Middlewares sécurité ====
+app.use(helmet());
+app.use(rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100
+}));
+app.use([
+    body('*').trim().escape(),
+    query('*').trim().escape(),
+    param('*').trim().escape(),
+])
 
 // ==== Routing ====
 app.use("/api", apiRouter);
