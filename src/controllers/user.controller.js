@@ -5,36 +5,27 @@ const userController = {
         // ==== Récupérer les données entrées ====
         const { user_id } = req.user;
 
-        try {
-            // ==== Vérifier si l'utilisateur existe ====
-            const userFound = await db.User.findByPk(user_id);
-            if (!userFound) {
-                res.status(404).json({ error: "User not found." })
-                return;
-            };
+        // ==== Vérifier si l'utilisateur existe ====
+        const userFound = await db.User.findByPk(user_id);
+        if (!userFound) {
+            const error = new Error("User not found");
+            error.status = 404;
+            throw error; // le middleware d'erreur va gérer la réponse
+        };
 
-            return res.status(200).json({
-                message: "User retrieved successfully.",
-                user: {
-                    user_id: userFound.user_id,
-                    username: userFound.username,
-                    email: userFound.email,
-                    description: userFound.description,
-                    createdAt: userFound.createdAt,
-                    updatedAt: userFound.updatedAt
-                }
-            });
-
-        } catch (error) {
-            console.error("Error getting user data", error);
-            res.status(500).json({
-                message: "Error getting user data.",
-                error: error.message
-            })
-            return;
-        }
+        return res.status(200).json({
+            message: "User retrieved successfully.",
+            user: {
+                user_id: userFound.user_id,
+                username: userFound.username,
+                email: userFound.email,
+                description: userFound.description,
+                createdAt: userFound.createdAt,
+                updatedAt: userFound.updatedAt
+            }
+        });
     },
-    modifyUser: async (req, res) => {
+    updateUser: async (req, res) => {
         // ==== Récupérer les données entrées ====
         const { user_id } = req.user;
         const updates = req.body;
@@ -46,65 +37,51 @@ const userController = {
         if (updates.description) updatedData.description = updates.description;
 
 
-        try {
-            // ==== Vérifier si l'utilisateur existe ====
-            const updatedUser = await db.User.findByPk(user_id);
-            if (!updatedUser) {
-                return res.status(404).json({ message: "User not found." })
-            }
-
-            // ==== Mettre à jour les champs dans la db ====
-            await updatedUser.update(updatedData);
-
-            return res.status(200).json({
-                message: "User data updated successfully.",
-                user: {
-                    user_id: updatedUser.user_id,
-                    username: updatedUser.username,
-                    email: updatedUser.email,
-                    description: updatedUser.description,
-                    createdAt: updatedUser.createdAt,
-                    updatedAt: updatedUser.updatedAt
-                }
-            });
-
-        } catch (error) {
-            console.error("An error occured while updating user :", error);
-            console.error("Sent data for update :", updatedData);
-
-            return res.status(500).json({
-                message: "An error occured while updating user.",
-                error: error.message
-            });
+        // ==== Vérifier si l'utilisateur existe ====
+        const updatedUser = await db.User.findByPk(user_id);
+        if (!updatedUser) {
+            const error = new Error("User not found.");
+            error.status = 404;
+            throw error;
         }
+
+        // ==== Mettre à jour les champs dans la db ====
+        await updatedUser.update(updatedData);
+
+        return res.status(200).json({
+            message: "User data updated successfully.",
+            user: {
+                user_id: updatedUser.user_id,
+                username: updatedUser.username,
+                email: updatedUser.email,
+                description: updatedUser.description,
+                createdAt: updatedUser.createdAt,
+                updatedAt: updatedUser.updatedAt
+            }
+        });
     },
-    deleteUser: async (req, res) => {
+    removeUser: async (req, res) => {
         const { user_id } = req.user;
 
-        try {
-            const userFound = await db.User.findByPk(user_id);
-            if (userFound) {
-                await userFound.destroy();
-            } else {
-                return res.status(404).json({ message: "User not found." })
-            };
-
-            return res.status(200).json({
-                message: "User deleted successfully.",
-                user: {
-                    user_id: userFound.user_id,
-                    email: userFound.email
-                }
-            });
-
-        } catch (error) {
-            console.error("Error deleting user:", error);
-            res.status(500).json({
-                message: "Error deleting user.",
-                error: error.message
-            });
-            return;
+        const userFound = await db.User.findByPk(user_id);
+        if (!userFound) {
+            const error = new Error("User not found.");
+            error.status = 404;
+            throw error;
         }
+
+        const deletedUserData = {
+            user_id: userFound.user_id,
+            email: userFound.email
+        }
+
+        await userFound.destroy();
+
+
+        return res.status(200).json({
+            message: "User deleted successfully.",
+            user: deletedUserData
+        });
     }
 }
 

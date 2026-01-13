@@ -41,7 +41,7 @@ export function authorizedMiddleware(...roles) {
             return;
         }
 
-        // *** S'il y a un rôle (admin/client/...) : ***
+        // todo: S'il y a un rôle (admin/client/...) :
         if(roles.length && !roles.includes(req.user.role)) {
             res.sendStatus(403); // forbiden
             return;

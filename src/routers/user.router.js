@@ -6,7 +6,7 @@ const userRouter = Router();
 
 userRouter.route("/")
     .get(userController.getUser)
-    .put(userController.modifyUser)
-    .delete(userController.deleteUser)
+    .put(userController.updateUser)
+    .delete(userController.removeUser)
 
 export default userRouter;
