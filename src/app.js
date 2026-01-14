@@ -23,11 +23,12 @@ app.use(rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 100
 }));
-app.use([
-    body('*').trim().escape(),
-    query('*').trim().escape(),
-    param('*').trim().escape(),
-])
+// todo: voir alternatives (custom?)
+// app.use([
+//     body('*').trim().escape(), ⚠️ transforme le body en string (problème dans games avec un tableau d'objet)
+//     query('*').trim().escape(), 
+//     param('*').trim().escape(),
+// ])
 
 // ==== Routing ====
 app.use("/api", apiRouter);

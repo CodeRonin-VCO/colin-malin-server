@@ -26,7 +26,7 @@ export const validateFields = (schema) => (req, res, next) => {
         // Ignorer les champs non fournis (si pas obligatoire)
         if (value === undefined || value === null || value === "") continue;
 
-        // Type string
+        // --- Type string
         if (rules.type === "string") {
             if (typeof value !== "string") {
                 errors.push(`${field} doit être une chaîne de caractères.`);
@@ -40,7 +40,7 @@ export const validateFields = (schema) => (req, res, next) => {
             }
         }
 
-        // Type number
+        // --- Type number
         if (rules.type === "number") {
             if (typeof value !== "number") {
                 errors.push(`${field} doit être un nombre.`);
@@ -54,14 +54,14 @@ export const validateFields = (schema) => (req, res, next) => {
             }
         }
 
-        // Type email
+        // --- Type email
         if (rules.type === "email") {
             if (typeof value !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
                 errors.push(`${field} doit être un email valide.`);
             }
         }
 
-        // Type password
+        // --- Type password
         if (rules.type === "password") {
             if (typeof value !== "string") {
                 errors.push(`${field} doit être une chaîne de caractères.`);
@@ -74,6 +74,34 @@ export const validateFields = (schema) => (req, res, next) => {
                 errors.push(
                     `${field} doit contenir au moins 8 caractères, une majuscule, un chiffre et un caractère spécial.`
                 );
+            }
+        }
+
+        // --- Type array
+        if (rules.type === "array") {
+            if (!Array.isArray(value)) {
+                errors.push(`${field} doit être un tableau.`);
+                continue;
+            }
+            if (rules.min !== undefined && value.length < rules.min) {
+                errors.push(`${field} doit contenir au moins ${rules.min} éléments.`);
+            }
+
+            if (rules.max !== undefined && value.length > rules.max) {
+                errors.push(`${field} doit contenir au maximum ${rules.max} éléments.`);
+            }
+            if (rules.of) {
+                value.forEach((item, index) => {
+                    if (rules.of === "string" && typeof item !== "string") {
+                        errors.push(`${field}[${index}] doit être une string.`);
+                    }
+                    if (rules.of === "number" && typeof item !== "number") {
+                        errors.push(`${field}[${index}] doit être un nombre.`);
+                    }
+                    if (rules.of === "object" && typeof item !== "object") {
+                        errors.push(`${field}[${index}] doit être un objet.`);
+                    }
+                });
             }
         }
 
