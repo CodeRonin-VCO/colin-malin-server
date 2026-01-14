@@ -1,52 +1,30 @@
 import db from "./../models/index.js";
+import * as userService from "./../services/user.service.js";
 
 const userController = {
     getUser: async (req, res) => {
         // ==== Récupérer les données entrées ====
         const { user_id } = req.user;
 
-        // ==== Vérifier si l'utilisateur existe ====
-        const userFound = await db.User.findByPk(user_id);
-        if (!userFound) {
-            const error = new Error("User not found");
-            error.status = 404;
-            throw error; // le middleware d'erreur va gérer la réponse
-        };
+        const { user } = await userService.getUser(user_id);
 
         return res.status(200).json({
             message: "User retrieved successfully.",
             user: {
-                user_id: userFound.user_id,
-                username: userFound.username,
-                email: userFound.email,
-                description: userFound.description,
-                createdAt: userFound.createdAt,
-                updatedAt: userFound.updatedAt
+                user_id: user.user_id,
+                username: user.username,
+                email: user.email,
+                description: user.description,
+                createdAt: user.createdAt,
+                updatedAt: user.updatedAt
             }
         });
     },
     updateUser: async (req, res) => {
-        // ==== Récupérer les données entrées ====
         const { user_id } = req.user;
         const updates = req.body;
 
-        // ==== Champs à mettre à jour ====
-        const updatedData = {};
-        if (updates.username) updatedData.username = updates.username;
-        if (updates.email) updatedData.email = updates.email;
-        if (updates.description) updatedData.description = updates.description;
-
-
-        // ==== Vérifier si l'utilisateur existe ====
-        const updatedUser = await db.User.findByPk(user_id);
-        if (!updatedUser) {
-            const error = new Error("User not found.");
-            error.status = 404;
-            throw error;
-        }
-
-        // ==== Mettre à jour les champs dans la db ====
-        await updatedUser.update(updatedData);
+        const { updatedUser } = await userService.updateUser(user_id, updates);        
 
         return res.status(200).json({
             message: "User data updated successfully.",
@@ -63,20 +41,7 @@ const userController = {
     removeUser: async (req, res) => {
         const { user_id } = req.user;
 
-        const userFound = await db.User.findByPk(user_id);
-        if (!userFound) {
-            const error = new Error("User not found.");
-            error.status = 404;
-            throw error;
-        }
-
-        const deletedUserData = {
-            user_id: userFound.user_id,
-            email: userFound.email
-        }
-
-        await userFound.destroy();
-
+        const { deletedUserData } = await userService.removeUser(user_id);
 
         return res.status(200).json({
             message: "User deleted successfully.",

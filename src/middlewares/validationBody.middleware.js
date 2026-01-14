@@ -8,14 +8,15 @@
  *      age: { type: "number", min: 0 }
  *    }
  */
-export const validateFields = (schema) => (req, res, next) => {
+export const validateFields = (schema, source = "body") => (req, res, next) => {
+    const data = req[source];
     const errors = [];
     const validatedData = {};
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
 
     for (const field in schema) {
         const rules = schema[field];
-        const value = req.body[field];
+        const value = data[field];
 
         // Vérifier si le champ est obligatoire
         if (rules.required && (value === undefined || value === null || value === "")) {
@@ -105,6 +106,11 @@ export const validateFields = (schema) => (req, res, next) => {
             }
         }
 
+        // --- Type object
+        if (rules.type === "object" && typeof value !== "object") {
+            errors.push(`${field} doit être un objet.`);
+        }
+
         // Ajouter champ validé
         validatedData[field] = value;
     }
@@ -114,7 +120,7 @@ export const validateFields = (schema) => (req, res, next) => {
     }
 
     // Remplacer req.body par les champs validés
-    req.body = validatedData;
+    req[source] = validatedData;
 
     next();
 };
