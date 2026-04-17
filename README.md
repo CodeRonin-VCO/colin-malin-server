@@ -1,175 +1,161 @@
-# Colin-Malin Server 
+# Colin-Malin Server
 
-Backend Node.js pour l'application de quiz **Colin-Malin**, offrant une API complète de gestion des utilisateurs, questions et parties de jeu.
+Backend Node.js pour l'application de quiz **Colin-Malin**, offrant une API REST complète de gestion des utilisateurs, questions et parties de jeu.
 
-## Description
-Colin-Malin est une application de quiz permettant aux utilisateurs de :
-- créer un compte et se connecter
-- jouer à des parties de quiz en solo
-- répondre à des questions filtrées (thème, difficulté)
-- enregistrer et consulter leurs scores
+---
 
-Le mode multijoueur est prévu mais non encore implémenté.
+## Fonctionnalités
 
-## Stack technique
+- Authentification (inscription / connexion / mise à jour du mot de passe)
+- Gestion du profil utilisateur (modification, suppression)
+- Quiz solo (création de partie, questions filtrées par thème et difficulté)
+- Enregistrement et consultation des scores
+- Espace admin pour gérer les questions (ajout, modification, suppression)
 
-- Node.js
-- Express
-- PostgreSQL
-- Sequelize (ORM)
-- JWT (authentification)
-- Validation des données via schémas
+---
 
-## État du projet
+## Technologies
 
-Fonctionnalités implémentées :
-- Authentification
-- Gestion des utilisateurs
-- Quiz solo
-- Scores
+| Catégorie | Technologie |
+|---|---|
+| Runtime | Node.js |
+| Framework | Express 5 |
+| Base de données | PostgreSQL |
+| ORM | Sequelize |
+| Authentification | JWT |
+| Hashage | Argon2 |
+| Sécurité | Helmet + express-rate-limit |
+| Tests | Jest (ES Modules via `--experimental-vm-modules`) |
 
-Fonctionnalités prévues :
-- Mode multijoueur
-- leaderBoard
-- Tests automatisés
-- Amélioration de la sécurité
-- Rôle (admin/user)
+---
+
+## Prérequis
+
+- Node.js 18+
+- PostgreSQL (via Docker en local)
+
+---
 
 ## Installation
 
-Cloner le dépôt :
-
+```bash
+# Cloner le projet
 git clone https://github.com/CodeRonin-VCO/colin-malin-server.git
 cd colin-malin-server
 
-Installer les dépendances :
-
-```npm install```
-
-## Configuration
-
-Créer un fichier `.env` à la racine du projet :
-```
-PORT=
-
-DB_HOST=
-DB_PORT=
-DB_NAME=
-DB_USER=
-DB_PASSWORD=
-
-JWT_SECRET=
-JWT_ISSUER=
-JWT_AUDIENCE=
+# Installer les dépendances
+npm install
 ```
 
-## Lancement du projet
-Mode développement (avec nodemon) :
+---
 
-```npm run dev```
+## Variables d'environnement
 
-Mode production :
+Créer un fichier `.env` à la racine du projet à partir du `.env.example` :
 
-```npm start```
+```env
+PORT="8008"
+NODE_ENV="dev"
 
-## Vérification du projet
-### Linter :
+# JWT
+JWT_SECRET=""
+JWT_ISSUER=""
+JWT_AUDIENCE=""
 
-```npx @eslint/create-config```
+# Base de données
+DB_DATABASE=""
+DB_USER="postgres"
+DB_PASSWORD=""
+DB_SERVER="localhost"
+DB_PORT="5432"
 
-Ajouter le script dans package.json :
+# Railway (alternative aux variables DB_* séparées)
+# DATABASE_URL=""
 ```
+
+> ⚠️ Ne jamais committer le fichier `.env` — il est dans `.gitignore`
+
+---
+
+## Lancer le projet
+
+```bash
+# Développement (avec nodemon)
+npm run dev
+
+# Production
+npm start
+
+# Initialiser la base de données
+npm run init-db
+
+# Linter
+npm run lint
+
+# Tests
+npm test
+
+# Tests en mode watch
+npm run test:watch
+```
+
+---
+
+## Tests
+
+Les tests couvrent les middlewares, les erreurs et les routes avec Jest et Supertest.
+
+```bash
+npm test
+```
+
+### Ce qui est testé
+
+| Fichier | Type |
+|---|---|
+| `apiError` | Classe d'erreur custom |
+| `auth.middleware` | Vérification JWT |
+| `errorHandler.middleware` | Gestion globale des erreurs |
+| `validationBody.middleware` | Validation du body |
+| `auth.router` | Tests d'intégration routes auth |
+
+### Configuration Jest (ES Modules)
+
+Ce projet utilise `"type": "module"`. Jest nécessite une configuration spécifique :
+
+```json
 "scripts": {
-    "lint": "eslint ."
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --forceExit",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch --forceExit"
 }
 ```
 
-Lancer lint :
-```npm run lint```
+---
 
-### Tests
-
-## Sécurité
-Mesures actuelles : 
-- helmet
-- rate-limit
-- Mot de passe hashé (argon2)
-- Routes protégées par JWT
-
-Améliorations prévues : 
-- Renforcement de la gestion des rôles
-
-## Gestion des erreurs
-Les erreurs sont centralisées via un middleware global (errorHandler) et un héritage de la classe Error (ApiError).
-
-Format de réponse standard (en dev):
-```
-{
-    method: req.method,
-    path: req.originalUrl,
-    statusCode,
-    name: error.name,
-    message: error.message,
-    stack: error.stack
-}
-```
-
-Format ApiError : 
-```
-statusCode, message, expose = statusCode < 500
-```
-
-## Routes de l'api
-
-```
-/api
-    /auth
-        POST    /login          # Connexion utilisateur
-        POST    /register       # Inscription utilisateur
-        POST    /update-pwd     # Mise à jour du mot de passe
-    /user
-        GET     /               # Récupérer le profil utilisateur
-        PUT     /               # Mettre à jour le profil
-        DELETE  /               # Supprimer le compte
-    /games
-        GET     /               # Lister les parties (historique)
-        POST    /               # Créer une nouvelle partie
-        GET     /:id            # Récupérer une partie spécifique
-    /questions
-            GET     /           # Lister les questions (pour admin ou sélection aléatoire)
-            GET     /search     # Chercher une question (pour admin)
-            POST    /filtered   # Questions filtrées (nb_questions, difficulté, thèmes)
-            POST    /           # Ajouter une question (admin)
-            GET     /:id        # Récupérer une question spécifique
-            PUT     /:id        # Mettre à jour une question (admin)
-            DELETE  /:id        # Supprimer une question (admin)
-    /scores
-        POST    /addResults     # Enregistrer les résultats d'une partie
-        GET     /filtered       # Récupérer les scores filtrés (thème, date, points)
-        GET     /user/:id       # Scores d’un utilisateur spécifique
-        GET     /leaderboard    # (optionnel) Top scores globaux
-```
-
-## 📁 Structure du projet
+## Architecture
 
 ```
 src/
 ├── app.js                          # Point d'entrée de l'application
 ├── config/
-│   └── init-db.js                  # Configuration et initialisation BD (sequelize)
+│   └── init-db.js                  # Initialisation BD (Sequelize sync)
 ├── controllers/
 │   ├── auth.controller.js          # Logique authentification
 │   ├── games.controller.js         # Logique des parties
 │   ├── questions.controller.js     # Logique des questions
-│   └── scores.controller.js        # Logique des scores
+│   ├── scores.controller.js        # Logique des scores
 │   └── user.controller.js          # Logique des profils utilisateurs
 ├── errors/
-│   └── apiError.js                 # Extension de Error pour une meilleure gestion des erreurs
+│   ├── apiError.js                 # Extension de Error pour une meilleure gestion des erreurs
+│   └── apiError.test.js            # Tests unitaires ApiError
 ├── middlewares/
 │   ├── auth.middleware.js          # Vérification JWT et autorisation
+│   ├── auth.middleware.test.js     # Tests unitaires auth middleware
 │   ├── errorHandler.middleware.js  # Gestion globale des erreurs
+│   ├── errorHandler.middleware.test.js  # Tests unitaires errorHandler
 │   ├── pagination.middleware.js    # Pagination des résultats
-│   └── validationBody.middleware.js # Validation des données du body
+│   ├── validationBody.middleware.js     # Validation des données du body
+│   └── validationBody.middleware.test.js  # Tests unitaires validation
 ├── models/
 │   ├── users.model.js              # Modèle Utilisateur
 │   ├── questions.model.js          # Modèle Questions
@@ -186,25 +172,118 @@ src/
 │   ├── scores.router.js            # Routes scores
 │   └── questions.router.js         # Routes questions
 ├── schemas/
-│   ├── auth.schema.js              # Schéma authentification (pour la validation du Body)
-│   ├── user.schema.js              # Schéma profil utilisateur (pour la validation du Body)
-│   ├── games.schema.js             # Schéma parties (pour la validation du Body)
-│   ├── scores.schema.js            # Schéma scores (pour la validation du Body)
-│   └── questions.schema.js         # Schéma questions (pour la validation du Body)
+│   ├── auth.schema.js              # Schéma authentification
+│   ├── user.schema.js              # Schéma profil utilisateur
+│   ├── games.schema.js             # Schéma parties
+│   ├── scores.schema.js            # Schéma scores
+│   └── questions.schema.js         # Schéma questions
 ├── services/
-│   ├── auth.service.js              # Service authentification (logique métier des controllers)
-│   ├── user.service.js              # Service profil utilisateur (logique métier des controllers)
-│   ├── games.service.js             # Service parties (logique métier des controllers)
-│   ├── scores.service.js            # Service scores (logique métier des controllers)
-│   └── questions.service.js         # Service questions (logique métier des controllers)
+│   ├── auth.service.js             # Service authentification
+│   ├── user.service.js             # Service profil utilisateur
+│   ├── games.service.js            # Service parties
+│   ├── scores.service.js           # Service scores
+│   └── questions.service.js        # Service questions
 └── utils/
     └── jwt.utils.js                # Utilitaires JWT
+tests/
+└── auth.router.test.js             # Tests d'intégration routes auth
 ```
 
+### Flux d'une requête
 
-## Améliorations techniques possibles
-- Remplacer le custom middleware gérant la validation du body par une librairie (Joi)
-  
+```
+Route → Controller → Service → Model → PostgreSQL
+```
+
+Les erreurs remontent via `throw new ApiError(statusCode, message)` et sont interceptées par le middleware `errorHandler`.
+
+---
+
+## Routes de l'API
+
+```
+/api
+    /auth
+        POST    /login          # Connexion utilisateur
+        POST    /register       # Inscription utilisateur
+        POST    /update-pwd     # Mise à jour du mot de passe
+    /user
+        GET     /               # Récupérer le profil utilisateur
+        PUT     /               # Mettre à jour le profil
+        DELETE  /               # Supprimer le compte
+    /games
+        GET     /               # Lister les parties (historique)
+        POST    /               # Créer une nouvelle partie
+        GET     /:id            # Récupérer une partie spécifique
+    /questions
+        GET     /               # Lister les questions
+        GET     /search         # Chercher une question (admin)
+        POST    /filtered       # Questions filtrées (nb, difficulté, thèmes)
+        POST    /               # Ajouter une question (admin)
+        GET     /:id            # Récupérer une question spécifique
+        PUT     /:id            # Mettre à jour une question (admin)
+        DELETE  /:id            # Supprimer une question (admin)
+    /scores
+        POST    /addResults     # Enregistrer les résultats d'une partie
+        GET     /filtered       # Récupérer les scores filtrés
+        GET     /user/:id       # Scores d'un utilisateur spécifique
+        GET     /leaderboard    # Top scores globaux
+```
+
+---
+
+## Gestion des erreurs
+
+Les erreurs sont centralisées via un middleware global (`errorHandler`) et une classe custom (`ApiError`) :
+
+```
+throw new ApiError(statusCode, message)
+        ↓
+errorHandler.middleware.js
+        ↓
+Réponse JSON standardisée
+```
+
+Format de réponse en dev :
+```json
+{
+    "method": "POST",
+    "path": "/api/auth/login",
+    "statusCode": 401,
+    "name": "ApiError",
+    "message": "Invalid credentials",
+    "stack": "..."
+}
+```
+
+---
+
+## Sécurité
+
+Mesures en place :
+- `helmet` — headers HTTP sécurisés
+- `express-rate-limit` — limitation du nombre de requêtes
+- `argon2` — hashage des mots de passe
+- JWT — routes protégées par token
+
+Améliorations prévues :
+- Gestion des rôles (admin / utilisateur)
+
+---
+
+## À venir
+
+- Mode multijoueur
+- Leaderboard global
+- Gestion des rôles (admin / utilisateur)
+
+---
+
+## Améliorations techniques identifiées
+
+- Remplacer le middleware de validation custom par une librairie (Joi)
+
+---
 
 ## Licence
 
