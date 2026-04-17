@@ -15,4 +15,8 @@ apiRouter.use("/questions", authentificationMiddleware(), authorizedMiddleware()
 apiRouter.use("/games", authentificationMiddleware(), authorizedMiddleware(), gamesRouter);
 apiRouter.use("/scores", authentificationMiddleware(), authorizedMiddleware(), scoresRouter);
 
+apiRouter.use("/protected", authentificationMiddleware(), (req, res) => {
+    res.status(200).json({message: "Token valide."})
+})
+
 export default apiRouter;

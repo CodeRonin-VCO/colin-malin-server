@@ -1,6 +1,3 @@
-import { Op, Sequelize } from "sequelize";
-import db from "./../models/index.js";
-import { v4 as uuidv4 } from 'uuid';
 import * as questionsService from "./../services/questions.service.js";
 
 const questionsController = {

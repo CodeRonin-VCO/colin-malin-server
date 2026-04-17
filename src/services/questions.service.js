@@ -1,7 +1,7 @@
 import db from "./../models/index.js";
 import { v4 as uuidv4 } from 'uuid';
 import { Op, Sequelize } from "sequelize";
-import ApiError from "../errors/auth.errors.js";
+import ApiError from "../errors/apiError.js";
 
 
 export async function getAll(offset, limit) {

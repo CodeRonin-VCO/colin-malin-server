@@ -1,9 +1,7 @@
-import db from "./../models/index.js";
 import * as userService from "./../services/user.service.js";
 
 const userController = {
     getUser: async (req, res) => {
-        // ==== Récupérer les données entrées ====
         const { user_id } = req.user;
 
         const { user } = await userService.getUser(user_id);

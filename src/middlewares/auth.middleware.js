@@ -1,4 +1,4 @@
-import ApiError from "../errors/auth.errors.js";
+import ApiError from "../errors/apiError.js";
 import { decodeToken } from "../utils/jwt.utils.js";
 
 
@@ -40,7 +40,6 @@ export function authorizedMiddleware(...roles) {
             throw new ApiError(401, "Non authentifié.")
         }
 
-        // todo: S'il y a un rôle (admin/client/...) :
         if (roles.length && !roles.includes(req.user.role)) {
             throw new ApiError(403, "Accès interdit.")
         }

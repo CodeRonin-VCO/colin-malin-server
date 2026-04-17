@@ -5,7 +5,6 @@ import cors from "cors";
 import errorHandler from "./middlewares/errorHandler.middleware.js";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
-import { body, param, query } from "express-validator";
 
 // ==== Setup ====
 const { PORT, NODE_ENV } = process.env;
@@ -16,19 +15,12 @@ app.use(morgan("dev"));
 app.use(cors());
 app.use(express.json({ limit: "100kb" }));
 
-
 // ==== Middlewares sécurité ====
 app.use(helmet());
 app.use(rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 100
 }));
-// todo: voir alternatives (custom?)
-// app.use([
-//     body('*').trim().escape(), ⚠️ transforme le body en string (problème dans games avec un tableau d'objet)
-//     query('*').trim().escape(), 
-//     param('*').trim().escape(),
-// ])
 
 // ==== Routing ====
 app.use("/api", apiRouter);
@@ -44,4 +36,6 @@ app.listen(PORT, (error) => {
     };
 
     console.log(`Web api running on:`, `http://localhost:${PORT}`, `[${NODE_ENV}]`);
-})
+});
+
+export default app;

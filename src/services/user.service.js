@@ -1,4 +1,4 @@
-import ApiError from "../errors/auth.errors.js";
+import ApiError from "../errors/apiError.js";
 import db from "./../models/index.js";
 
 export async function getUser(user_id) {

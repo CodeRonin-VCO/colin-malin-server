@@ -24,3 +24,5 @@ questionsRouter.route("/:question_id")
 
 
 export default questionsRouter;
+
+// todo: faille de sécurité, le rôle admin est géré côté front mais pas back. authorizedMiddleware("admin") doit être appelé sur les routes uniquement pour les admins.

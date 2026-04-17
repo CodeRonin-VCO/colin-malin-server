@@ -1,10 +1,9 @@
 import { hash, verify } from "argon2";
-import ApiError from "../errors/auth.errors.js";
+import ApiError from "../errors/apiError.js";
 import db from "./../models/index.js";
 import { generateToken } from "../utils/jwt.utils.js";
 import { v4 as uuidv4 } from 'uuid';
 
-// todo: supprimer les username du token (// front)
 
 export async function login(email, password) {
     const user = await db.User.findOne({ where: { email } });

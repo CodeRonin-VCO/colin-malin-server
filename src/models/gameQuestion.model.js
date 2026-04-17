@@ -1,5 +1,4 @@
-import { DataTypes, Sequelize } from "sequelize";
-
+import { DataTypes } from "sequelize";
 
 /**
  * 

@@ -1,7 +1,7 @@
 import { Op } from "sequelize";
 import db from "./../models/index.js";
 import { v4 as uuidv4 } from 'uuid';
-import ApiError from "../errors/auth.errors.js";
+import ApiError from "../errors/apiError.js";
 
 export async function addResults(user_id, game_id, points, time_spent, category_scores, answers) {
     if (!user_id || points === undefined) {

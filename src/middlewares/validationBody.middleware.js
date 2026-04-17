@@ -12,7 +12,7 @@ export const validateFields = (schema, source = "body") => (req, res, next) => {
     const data = req[source];
     const errors = [];
     const validatedData = {};
-    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-={};':"\\|,.<>/?[]).{8,}$/;
 
     for (const field in schema) {
         const rules = schema[field];

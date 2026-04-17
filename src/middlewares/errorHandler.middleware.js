@@ -1,6 +1,6 @@
-const { NODE_ENV } = process.env;
+const errorHandler = (error, req, res) => {
+    const { NODE_ENV } = process.env; // lu à chaque appel
 
-const errorHandler = (error, req, res, next) => {
     const statusCode = error.statusCode || error.status || 500;
     const isDev = NODE_ENV === "dev";
 

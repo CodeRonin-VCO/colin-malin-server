@@ -33,6 +33,7 @@ const scoresController = {
     },
     getLeaderBoard: async (req, res) => {
         return res.status(200).send("En construction...");
+        // todo: créer la méthode leaderboard pour avoir le top 10 des joueurs.
     }
 }
 

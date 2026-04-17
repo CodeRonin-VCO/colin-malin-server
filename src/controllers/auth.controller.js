@@ -2,7 +2,6 @@ import * as authService from "./../services/auth.service.js";
 
 const authController = {
     login: async (req, res) => {
-        // ==== Récupérer les données entrées ====
         const { email, password } = req.body;
         const { user, token } = await authService.login(email, password);
 
@@ -20,7 +19,6 @@ const authController = {
         });
     },
     register: async (req, res) => {
-        // ==== Récupérer les données entrées ====
         const { username, email, password } = req.body;
         const { newUser, token } = await authService.register(username, email, password);
 
@@ -35,7 +33,6 @@ const authController = {
         });
     },
     updatePwd: async (req, res) => {
-        // ==== Récupérer les données entrées ====
         const { email, oldPassword, newPassword } = req.body;
         await authService.updatePwd(email, oldPassword, newPassword);
         
