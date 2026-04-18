@@ -9,6 +9,7 @@ import rateLimit from "express-rate-limit";
 // ==== Setup ====
 const { PORT, NODE_ENV } = process.env;
 const app = express();
+app.set("trust proxy", 1); // faire confiance au proxy railway
 
 // ==== Middlewares transport  ====
 app.use(morgan("dev"));

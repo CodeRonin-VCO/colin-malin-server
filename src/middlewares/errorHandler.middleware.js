@@ -1,4 +1,5 @@
-const errorHandler = (error, req, res) => {
+// eslint-disable-next-line no-unused-vars
+const errorHandler = (error, req, res, next) => {
     const { NODE_ENV } = process.env; // lu à chaque appel
 
     const statusCode = error.statusCode || error.status || 500;
