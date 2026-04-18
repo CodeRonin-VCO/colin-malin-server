@@ -6,6 +6,16 @@ import errorHandler from "./middlewares/errorHandler.middleware.js";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 
+process.on("uncaughtException", (err) => {
+    console.error("uncaughtException:", err);
+    process.exit(1);
+});
+
+process.on("unhandledRejection", (reason) => {
+    console.error("unhandledRejection:", reason);
+    process.exit(1);
+});
+
 // ==== Setup ====
 const { PORT, NODE_ENV } = process.env;
 const app = express();
