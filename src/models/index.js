@@ -7,14 +7,26 @@ import gameQuestionModel from "./gameQuestion.model.js";
 import scoreModel from "./scores.model.js";
 
 // ==== Obtenir les variables d'environnement ====
-const { DB_DATABASE, DB_USER, DB_PASSWORD, DB_SERVER, DB_PORT } = process.env;
+const { DATABASE_URL, DB_DATABASE, DB_USER, DB_PASSWORD, DB_SERVER, DB_PORT } = process.env;
 
 // ==== Init sequelize ====
-const sequelize = new Sequelize(DB_DATABASE, DB_USER, DB_PASSWORD, {
-    host: DB_SERVER,
-    port: DB_PORT,
-    dialect: "postgres"
-})
+const sequelize = DATABASE_URL
+    // En prod (Railway) → utilise DATABASE_URL avec SSL
+    ? new Sequelize(DATABASE_URL, {
+        dialect: "postgres",
+        dialectOptions: {
+            ssl: {
+                require: true,
+                rejectUnauthorized: false
+            }
+        }
+    })
+    // En local → utilise les variables DB_*
+    : new Sequelize(DB_DATABASE, DB_USER, DB_PASSWORD, {
+        host: DB_SERVER,
+        port: DB_PORT,
+        dialect: "postgres"
+    });
 
 const db = {};
 export default db;
