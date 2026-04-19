@@ -11,6 +11,9 @@ export async function getUser(user_id) {
 }
 
 export async function updateUser(user_id, updates) {
+    console.log("updates reçus dans service:", updates);
+    console.log("updatedData construit:", updatedData);
+    
     const updatedData = {};
     if (updates.username) updatedData.username = updates.username;
     if (updates.email) updatedData.email = updates.email;
