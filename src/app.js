@@ -23,7 +23,12 @@ app.set("trust proxy", 1); // faire confiance au proxy railway
 
 // ==== Middlewares transport  ====
 app.use(morgan("dev"));
-app.use(cors());
+app.use(cors({
+    origin: ["http://localhost:5173", "https://colin-malin.vercel.app"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true
+}));
 app.use(express.json({ limit: "100kb" }));
 
 // ==== Middlewares sécurité ====
