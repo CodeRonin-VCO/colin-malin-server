@@ -11,14 +11,11 @@ export async function getUser(user_id) {
 }
 
 export async function updateUser(user_id, updates) {
-    console.log("updates reçus dans service:", updates);
-    
     const updatedData = {};
     if (updates.username) updatedData.username = updates.username;
     if (updates.email) updatedData.email = updates.email;
     if (updates.description) updatedData.description = updates.description;
-    
-    console.log("updatedData construit:", updatedData);
+
 
     const updatedUser = await db.User.findByPk(user_id);
     if (!updatedUser) {

@@ -47,11 +47,11 @@ app.use(errorHandler);
 // ==== Server ====
 app.listen(PORT, (error) => {
     if (error) {
-        console.log("Failure to start server", error);
+        console.error("Failure to start server", error);
         return;
     };
 
-    console.log(`Web api running on:`, `http://localhost:${PORT}`, `[${NODE_ENV}]`);
+    console.info(`Web api running on:`, `http://localhost:${PORT}`, `[${NODE_ENV}]`);
 });
 
 export default app;

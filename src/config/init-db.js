@@ -6,10 +6,10 @@ try {
         alter: { drop: false }
     });
 
-    console.log("--- Base de données initialisée avec succès. ---");
+    console.info("--- Base de données initialisée avec succès. ---");
     process.exit(0);
 
 } catch (error) {
-    console.log(`L'initialisation a échoué`, error);
+    console.error(`L'initialisation a échoué`, error);
     process.exit(1);
 }
