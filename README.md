@@ -266,16 +266,12 @@ Mesures en place :
 - `argon2` — hashage des mots de passe
 - JWT — routes protégées par token
 
-Améliorations prévues :
-- Gestion des rôles (admin / utilisateur)
-
 ---
 
 ## À venir
 
 - Mode multijoueur
 - Leaderboard global
-- Gestion des rôles (admin / utilisateur)
 
 ---
 
